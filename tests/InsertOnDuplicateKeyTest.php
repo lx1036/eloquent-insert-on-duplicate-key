@@ -13,6 +13,7 @@ class InsertOnDuplicateKeyTest extends InsertOnDuplicateKeyTestCase
         'id'    => 1,
         'name'  => 'new name 1',
         'email' => 'new1@gmail.com',
+        'expires_at' => '2000-01-01 00:00:00',
     ];
 
     protected $updatedPivotRow = [
@@ -29,9 +30,9 @@ class InsertOnDuplicateKeyTest extends InsertOnDuplicateKeyTestCase
         parent::setUp();
 
         User::insert([
-            ['id' => 1, 'name' => 'old', 'email' => 'old@gmail.com'],
-            ['id' => 2, 'name' => 'old', 'email' => 'old@gmail.com'],
-            ['id' => 3, 'name' => 'old', 'email' => 'old@gmail.com'],
+            ['id' => 1, 'name' => 'old', 'email' => 'old@gmail.com', ],
+            ['id' => 2, 'name' => 'old', 'email' => 'old@gmail.com', ],
+            ['id' => 3, 'name' => 'old', 'email' => 'old@gmail.com', ],
         ]);
 
         Role::insert([
@@ -52,6 +53,8 @@ class InsertOnDuplicateKeyTest extends InsertOnDuplicateKeyTestCase
             'id'    => 2,
             'name'  => 'new name 2',
             'email' => 'new2@gmail.com',
+            'expires_at' => now(),
+//            'expires_at' => time(),
         ];
 
         User::insertOnDuplicateKey([$this->updatedUser, $updatedUser2]);
@@ -132,6 +135,7 @@ class InsertOnDuplicateKeyTest extends InsertOnDuplicateKeyTestCase
             'id'    => 4,
             'name'  => 'new name 4',
             'email' => null,
+            'expires_at' => now()
         ];
 
         User::insertIgnore([$this->updatedUser, $newUser]);

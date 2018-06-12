@@ -31,7 +31,8 @@ abstract class InsertOnDuplicateKeyTestCase extends TestCase
         parent::setUp();
 
         $this->app['config']->set([
-            'database.connections.mysql.username' => 'root',
+            'database.connections.mysql.username' => 'testing',
+            'database.connections.mysql.password' => 'testing',
             'database.connections.mysql.database' => 'eloquent_insert_on_duplicate_key',
         ]);
 

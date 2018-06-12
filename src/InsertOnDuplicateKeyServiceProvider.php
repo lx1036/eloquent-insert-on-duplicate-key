@@ -58,10 +58,14 @@ class InsertOnDuplicateKeyServiceProvider extends ServiceProvider
                 }
             }
 
+            dump('values', $values);
+
             // Finally, we will run this query against the database connection and return
             // the results. We will need to also flatten these bindings before running
             // the query so they are all in one huge, flattened array for execution.
             $bindings = $this->cleanBindings(Arr::flatten($values, 1));
+
+            dump('bindings', $bindings);
 
             // Essentially we will force every insert to be treated as a batch insert which
             // simply makes creating the SQL easier for us since we can utilize the same
@@ -72,12 +76,16 @@ class InsertOnDuplicateKeyServiceProvider extends ServiceProvider
 
             $columnsString = $this->grammar->columnize($columns);
 
+            dump('$columnsString', $columnsString);
+
             // We need to build a list of parameter place-holders of values that are bound
             // to the query. Each insert should have the exact same amount of parameter
             // bindings so we will loop through the record and parameterize them all.
             $parameters = collect($values)->map(function ($record) {
                 return '(' . $this->grammar->parameterize($record) . ')';
             })->implode(', ');
+
+            dump('$parameters', $parameters);
 
             $sql = 'insert ' . ($type === 'ignore' ? 'ignore ' : '') . "into $table ($columnsString) values $parameters";
 
@@ -93,9 +101,13 @@ class InsertOnDuplicateKeyServiceProvider extends ServiceProvider
                 $columnsToUpdate = $columns;
             }
 
+            dump('$columnsToUpdate', $columnsToUpdate);
+
             foreach ($columnsToUpdate as $key => $value) {
                 $column = is_int($key) ? $value : $key;
                 $column = $this->grammar->wrap($column);
+
+                dump('$column', $column);
 
                 $sql .= "$column = ";
 
@@ -112,6 +124,8 @@ class InsertOnDuplicateKeyServiceProvider extends ServiceProvider
 
                 $sql .= ',';
             }
+
+            dump($sql, $bindings);
 
             return $this->connection->insert(rtrim($sql, ','), $bindings);
         });
